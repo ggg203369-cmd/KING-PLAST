@@ -1,0 +1,124 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Default deny catch-all
+    match /{document=**} {
+      allow read, write: if false;
+    }
+
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    function isAdmin() {
+      return isSignedIn() && (
+        request.auth.token.email == 'ggg203369@gmail.com' ||
+        exists(/databases/$(database)/documents/admins/$(request.auth.uid))
+      );
+    }
+
+    function isValidId(id) {
+      return id is string && id.size() <= 128 && id.matches('^[a-zA-Z0-9_\\-]+$');
+    }
+
+    // Interactive Comments:
+    // Anyone can post a comment with appropriate length and character constraints.
+    // Public can read approved comments; admins can read, moderate, reply, and delete.
+    match /comments/{commentId} {
+      allow create: if isValidId(commentId) &&
+        request.resource.data.authorName is string &&
+        request.resource.data.authorName.size() >= 2 &&
+        request.resource.data.authorName.size() <= 100 &&
+        request.resource.data.targetId is string &&
+        request.resource.data.content is string &&
+        request.resource.data.content.size() >= 2 &&
+        request.resource.data.content.size() <= 2000;
+      allow read: if resource.data.isApproved == true || isAdmin();
+      allow update, delete: if isAdmin() && isValidId(commentId);
+    }
+
+    // Confidential Prayer Requests:
+    // Public can submit a prayer request.
+    // ONLY authenticated church clergy/admins can read and update prayer requests.
+    match /prayer_requests/{requestId} {
+      allow create: if isValidId(requestId) &&
+        request.resource.data.requesterName is string &&
+        request.resource.data.requesterName.size() >= 2 &&
+        request.resource.data.requesterName.size() <= 120 &&
+        request.resource.data.intention is string &&
+        request.resource.data.intention.size() >= 3 &&
+        request.resource.data.intention.size() <= 2500 &&
+        request.resource.data.category is string;
+      allow read, update, delete: if isAdmin() && isValidId(requestId);
+    }
+
+    // Sermons and Hymns:
+    match /sermons/{sermonId} {
+      allow read: if true;
+      allow create, update, delete: if isAdmin() && isValidId(sermonId);
+    }
+
+    // Mass Videos and Liturgical Recordings:
+    match /mass_videos/{videoId} {
+      allow read: if true;
+      allow create, update, delete: if isAdmin() && isValidId(videoId);
+    }
+
+    // Holy Liturgy and Weekly Schedules:
+    match /mass_schedules/{scheduleId} {
+      allow read: if true;
+      allow create, update, delete: if isAdmin() && isValidId(scheduleId);
+    }
+
+    // Announcements and News:
+    match /announcements/{announcementId} {
+      allow read: if true;
+      allow create, update, delete: if isAdmin() && isValidId(announcementId);
+    }
+
+    // Church Pastoral Services and Ministries:
+    match /church_services/{serviceId} {
+      allow read: if true;
+      allow create, update, delete: if isAdmin() && isValidId(serviceId);
+    }
+
+    // Gallery and Media Items:
+    match /gallery/{itemId} {
+      allow read: if true;
+      allow create, update, delete: if isAdmin() && isValidId(itemId);
+    }
+
+    // Coptic Calendar Feasts and Events:
+    match /coptic_events/{eventId} {
+      allow read: if true;
+      allow create, update, delete: if isAdmin() && isValidId(eventId);
+    }
+
+    // General Church Profile Settings:
+    match /settings/{settingId} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
+    // Audit and administrative logs:
+    match /audit_logs/{logId} {
+      allow read, create: if isAdmin() && isValidId(logId);
+      allow update, delete: if false;
+    }
+
+    // System bootstrap marker
+    match /system/bootstrap {
+      allow read: if true;
+      allow create: if !exists(/databases/$(database)/documents/system/bootstrap);
+      allow update: if isAdmin();
+    }
+
+    // Admin Users Directory
+    match /admins/{adminId} {
+      allow read: if isAdmin();
+      allow write: if (isSignedIn() && !exists(/databases/$(database)/documents/system/bootstrap)) ||
+                     (isSignedIn() && request.auth.token.email == 'ggg203369@gmail.com') ||
+                     isAdmin();
+    }
+  }
+}

@@ -1,0 +1,144 @@
+{
+  "entities": {
+    "Comment": {
+      "title": "Comment",
+      "description": "Interactive comment on sermons, articles, or church announcements",
+      "type": "object",
+      "properties": {
+        "authorName": { "type": "string", "minLength": 2, "maxLength": 100 },
+        "authorEmail": { "type": "string", "format": "email" },
+        "targetId": { "type": "string", "description": "ID of the sermon or article" },
+        "targetTitle": { "type": "string", "description": "Title of the sermon or article" },
+        "content": { "type": "string", "minLength": 2, "maxLength": 1000 },
+        "isApproved": { "type": "boolean" },
+        "adminReply": { "type": "string", "maxLength": 1000 },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "likesCount": { "type": "integer" }
+      },
+      "required": ["authorName", "targetId", "content", "isApproved", "createdAt"]
+    },
+    "PrayerRequest": {
+      "title": "PrayerRequest",
+      "description": "Private prayer request submitted by church members or visitors for clergy intercession",
+      "type": "object",
+      "properties": {
+        "requesterName": { "type": "string", "minLength": 2, "maxLength": 120 },
+        "intention": { "type": "string", "minLength": 3, "maxLength": 2000 },
+        "category": { "type": "string", "enum": ["healing", "thanksgiving", "comfort", "exam", "family", "general"] },
+        "isConfidential": { "type": "boolean" },
+        "status": { "type": "string", "enum": ["received", "prayed_for"] },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "clergyNotes": { "type": "string", "maxLength": 1000 }
+      },
+      "required": ["requesterName", "intention", "category", "status", "createdAt"]
+    },
+    "Sermon": {
+      "title": "Sermon",
+      "description": "Audio or video sermon, spiritual lecture, or liturgical hymn",
+      "type": "object",
+      "properties": {
+        "title": { "type": "string", "minLength": 3, "maxLength": 250 },
+        "titleEn": { "type": "string" },
+        "speaker": { "type": "string", "minLength": 2, "maxLength": 120 },
+        "category": { "type": "string", "enum": ["faith", "bible", "family", "spiritual", "patrology", "hymns"] },
+        "description": { "type": "string", "maxLength": 2000 },
+        "audioUrl": { "type": "string" },
+        "videoUrl": { "type": "string" },
+        "duration": { "type": "string" },
+        "date": { "type": "string" },
+        "featured": { "type": "boolean" }
+      },
+      "required": ["title", "speaker", "category", "date"]
+    },
+    "MassSchedule": {
+      "title": "MassSchedule",
+      "description": "Weekly Holy Liturgy and spiritual service schedule",
+      "type": "object",
+      "properties": {
+        "title": { "type": "string" },
+        "titleEn": { "type": "string" },
+        "dayOfWeek": { "type": "string" },
+        "startTime": { "type": "string" },
+        "endTime": { "type": "string" },
+        "churchHall": { "type": "string" },
+        "celebrantFather": { "type": "string" },
+        "targetGroup": { "type": "string" },
+        "isActive": { "type": "boolean" }
+      },
+      "required": ["title", "dayOfWeek", "startTime", "endTime", "isActive"]
+    },
+    "Announcement": {
+      "title": "Announcement",
+      "description": "Church news, liturgical feast announcements, or urgent notices",
+      "type": "object",
+      "properties": {
+        "title": { "type": "string" },
+        "titleEn": { "type": "string" },
+        "content": { "type": "string" },
+        "category": { "type": "string", "enum": ["feast", "service", "urgent", "general"] },
+        "isUrgent": { "type": "boolean" },
+        "publishDate": { "type": "string" }
+      },
+      "required": ["title", "content", "category", "publishDate"]
+    },
+    "ChurchService": {
+      "title": "ChurchService",
+      "description": "Church ministry or activity department",
+      "type": "object",
+      "properties": {
+        "name": { "type": "string" },
+        "nameEn": { "type": "string" },
+        "description": { "type": "string" },
+        "leaderName": { "type": "string" },
+        "meetingTime": { "type": "string" },
+        "ageGroup": { "type": "string" }
+      },
+      "required": ["name", "description"]
+    },
+    "ChurchSettings": {
+      "title": "ChurchSettings",
+      "description": "General church profile and contact information",
+      "type": "object",
+      "properties": {
+        "churchNameAr": { "type": "string" },
+        "churchNameEn": { "type": "string" },
+        "addressAr": { "type": "string" },
+        "addressEn": { "type": "string" },
+        "phone": { "type": "string" },
+        "email": { "type": "string" },
+        "streamingUrl": { "type": "string" }
+      },
+      "required": ["churchNameAr", "addressAr"]
+    }
+  },
+  "firestore": {
+    "/comments/{commentId}": {
+      "schema": "Comment",
+      "description": "Public comments with moderation controls on church sermons and articles"
+    },
+    "/prayer_requests/{requestId}": {
+      "schema": "PrayerRequest",
+      "description": "Strictly confidential prayer requests received by the church fathers"
+    },
+    "/sermons/{sermonId}": {
+      "schema": "Sermon",
+      "description": "Audio and video sermons and liturgical hymns library"
+    },
+    "/mass_schedules/{scheduleId}": {
+      "schema": "MassSchedule",
+      "description": "Weekly Holy Mass and liturgical meeting schedules"
+    },
+    "/announcements/{announcementId}": {
+      "schema": "Announcement",
+      "description": "Official church news, spiritual feast alerts, and events"
+    },
+    "/church_services/{serviceId}": {
+      "schema": "ChurchService",
+      "description": "Pastoral services, youth meetings, Sunday school, and community outreach"
+    },
+    "/settings/{settingId}": {
+      "schema": "ChurchSettings",
+      "description": "Church configuration and contact info"
+    }
+  }
+}

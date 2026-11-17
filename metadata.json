@@ -1,0 +1,6 @@
+{
+  "name": "الكينج بلاست | KING PLAST — سوق خامات البلاستيك الصناعية",
+  "description": "المنصة التجارية المتكاملة لتوريد حبيبات البلاستيك المعاد تدويرها والخامات البوليمرية البكر PP و HDPE و LDPE و PET و PVC و ABS.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

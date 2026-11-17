@@ -1,0 +1,132 @@
+@import "tailwindcss";
+@custom-variant dark (&:where(.dark, .dark *));
+
+:root {
+  --kp-royal-purple: #6D28D9;
+  --kp-deep-purple: #07020F;
+  --kp-mid-purple: #120726;
+  --kp-surface-glass: rgba(20, 9, 42, 0.72);
+  --kp-yellow: #FACC15;
+  --kp-gold: #D4AF37;
+  --kp-canvas: #07020F;
+}
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+    background-color: #07020F;
+  }
+
+  body {
+    font-family: 'Cairo', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    background-color: var(--kp-canvas);
+    color: #F5F3FF;
+    overflow-x: hidden;
+  }
+
+  .font-display-latin {
+    font-family: 'Cinzel', 'Cairo', serif;
+  }
+
+  .font-mono-tech {
+    font-family: 'IBM Plex Mono', monospace;
+    font-variant-numeric: tabular-nums;
+  }
+}
+
+.tabular-nums {
+  font-variant-numeric: tabular-nums;
+}
+
+/* 2070 Subtle Architectural Grid Backdrop */
+.bg-grid-2070 {
+  background-image:
+    linear-gradient(to right, rgba(167, 139, 250, 0.06) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(167, 139, 250, 0.06) 1px, transparent 1px);
+  background-size: 48px 48px;
+}
+
+/* Custom 2070 Royal Purple & Gold Scrollbar */
+::-webkit-scrollbar {
+  width: 7px;
+  height: 7px;
+}
+
+::-webkit-scrollbar-track {
+  background: #07020F;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #4C1D95;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #FACC15;
+}
+
+@keyframes floatSlow {
+  0%, 100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-6px);
+  }
+}
+
+@keyframes orbitSpin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes orbitSpinReverse {
+  0% {
+    transform: rotate(360deg);
+  }
+  100% {
+    transform: rotate(0deg);
+  }
+}
+
+@keyframes sheenSweep {
+  0% {
+    transform: translateX(-100%);
+    opacity: 0;
+  }
+  50% {
+    opacity: 0.45;
+  }
+  100% {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+}
+
+.animate-float-slow {
+  animation: floatSlow 6s ease-in-out infinite;
+}
+
+.animate-orbit-slow {
+  animation: orbitSpin 28s linear infinite;
+}
+
+.animate-orbit-reverse {
+  animation: orbitSpinReverse 38s linear infinite;
+}
+
+.animate-sheen {
+  animation: sheenSweep 6s ease-in-out infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-float-slow,
+  .animate-orbit-slow,
+  .animate-orbit-reverse,
+  .animate-sheen {
+    animation: none;
+  }
+}
